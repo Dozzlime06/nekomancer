@@ -175,7 +175,7 @@ export async function getContractBalance(address: string): Promise<string> {
     const contract = getContract();
     const balance = await contract.getUserBalance(address);
     if (balance === null || balance === undefined) return "0";
-    return ethers.formatUnits(balance, 6);
+    return ethers.formatUnits(balance, 18);
   } catch (error) {
     console.error("Failed to get contract balance:", error);
     return "0";
