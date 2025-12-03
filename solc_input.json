@@ -1,0 +1,23 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/PredictionMarketV2.sol": {
+      "content": ""
+    },
+    "contracts/interfaces/IERC20.sol": {
+      "content": ""
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "viaIR": true,
+    "outputSelection": {
+      "*": {
+        "*": ["abi", "evm.bytecode", "evm.deployedBytecode", "metadata"]
+      }
+    }
+  }
+}

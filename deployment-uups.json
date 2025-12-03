@@ -1,0 +1,15 @@
+{
+  "network": "monad-mainnet",
+  "chainId": 143,
+  "proxyAddress": "0x0118B45105e06e9696bF8959ff3115e3F505D44C",
+  "implementationAddress": "0x3a4730423C0B4594f8C4A6Dc2E61f5725b48a993",
+  "proxyType": "UUPS",
+  "usdc": "0x754704Bc059F8C67012fEd69BC8A327a5aafb603",
+  "treasury": "0xE9059B5f1C60ecf9C1F07ac2bBa148A75394f56e",
+  "owner": "0x0315eCb53F64b7A4bA56bb8A4DAB0D96F0856b60",
+  "version": "2.0.0-UUPS",
+  "deployedAt": "2025-12-03T04:28:42.313Z",
+  "v3ImplementationAddress": "0xBD96F86eA9081e5C51C69257709DfD9625ebB6E9",
+  "currentVersion": "3.0.0-UUPS",
+  "upgradedAt": "2025-12-03T04:39:14.805Z"
+}

@@ -1,0 +1,13 @@
+{
+  "network": "monad-mainnet",
+  "chainId": 143,
+  "proxyAddress": "0x8A15A75501D49F44A4c2c6f0803a01534f0E3fCe",
+  "implementationAddress": "0x3ab110A7becB2858971cc227e2D684E98a52b273",
+  "usdc": "0x754704Bc059F8C67012fEd69BC8A327a5aafb603",
+  "owner": "0x0315eCb53F64b7A4bA56bb8A4DAB0D96F0856b60",
+  "deployedAt": "2025-12-03T04:08:39.845Z",
+  "v2ImplementationAddress": "0xa6120d1eBe106A1051F84899c2912ac83EABc15F",
+  "treasury": "0xE9059B5f1C60ecf9C1F07ac2bBa148A75394f56e",
+  "upgradedAt": "2025-12-03T04:15:26.629Z",
+  "version": "2.0.0"
+}
