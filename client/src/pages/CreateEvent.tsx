@@ -9,7 +9,7 @@ import logoImage from "@assets/IMG_9377_1764744730481.jpeg";
 import { Link, useLocation } from "wouter";
 import { useState, useEffect } from "react";
 import { useContract } from "@/hooks/useContract";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { usePrivy } from "@privy-io/react-auth";
 import { toast } from "sonner";
 import {
   Select,
@@ -37,7 +37,7 @@ const CRYPTO_ASSETS = [
 export default function CreateEvent() {
   const [, navigate] = useLocation();
   const { isConnected, address, createMarket, getContractBalance, loading, error } = useContract();
-  const { openConnectModal } = useConnectModal();
+  const { login } = usePrivy();
 
   const [category, setCategory] = useState("Crypto");
   const [question, setQuestion] = useState("");
@@ -61,7 +61,7 @@ export default function CreateEvent() {
     e.preventDefault();
 
     if (!isConnected) {
-      openConnectModal?.();
+      login();
       return;
     }
 
@@ -145,7 +145,7 @@ export default function CreateEvent() {
                   <Coins className="h-4 w-4 text-primary" />
                   <span className="text-sm">Trading Balance</span>
                 </div>
-                <span className="font-mono font-bold">${parseFloat(contractBalance).toFixed(2)} USDC</span>
+                <span className="font-mono font-bold">{parseFloat(contractBalance).toFixed(2)} $MANCER</span>
               </div>
             )}
 
