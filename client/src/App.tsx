@@ -4,10 +4,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
-import { WagmiProvider } from "wagmi";
-import { config } from "./lib/wagmi";
-import "@rainbow-me/rainbowkit/styles.css";
+import { PrivyProvider } from "@privy-io/react-auth";
+import { PRIVY_APP_ID, monadMainnet } from "./lib/privy";
 
 import Home from "@/pages/Home";
 import Markets from "@/pages/Markets";
@@ -39,26 +37,29 @@ function Router() {
 
 function App() {
   return (
-    <WagmiProvider config={config}>
+    <PrivyProvider
+      appId={PRIVY_APP_ID}
+      config={{
+        appearance: {
+          theme: "dark",
+          accentColor: "#836EF9",
+        },
+        loginMethods: ["wallet"],
+        defaultChain: monadMainnet,
+        supportedChains: [monadMainnet],
+        embeddedWallets: {
+          createOnLogin: "off",
+        },
+      }}
+    >
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider
-          theme={darkTheme({
-            accentColor: "#836EF9",
-            accentColorForeground: "white",
-            borderRadius: "large",
-            fontStack: "system",
-            overlayBlur: "small",
-          })}
-          modalSize="compact"
-        >
-          <TooltipProvider>
-            <Toaster />
-            <SonnerToaster position="top-right" theme="dark" />
-            <Router />
-          </TooltipProvider>
-        </RainbowKitProvider>
+        <TooltipProvider>
+          <Toaster />
+          <SonnerToaster position="top-right" theme="dark" />
+          <Router />
+        </TooltipProvider>
       </QueryClientProvider>
-    </WagmiProvider>
+    </PrivyProvider>
   );
 }
 
