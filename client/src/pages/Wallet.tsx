@@ -15,6 +15,7 @@ import { useState, useEffect } from "react";
 import { useContract } from "@/hooks/useContract";
 import { usePrivy } from "@privy-io/react-auth";
 import { toast } from "sonner";
+import { getMancerUsdPrice, formatUsd } from "@/lib/contract";
 
 export default function Wallet() {
   const { 
@@ -37,19 +38,22 @@ export default function Wallet() {
   const [mancerBalance, setMancerBalance] = useState("0");
   const [allowance, setAllowance] = useState("0");
   const [refreshing, setRefreshing] = useState(false);
+  const [mancerPrice, setMancerPrice] = useState<number>(0);
 
   const refreshBalances = async () => {
     if (!isConnected) return;
     setRefreshing(true);
     try {
-      const [cb, mb, al] = await Promise.all([
+      const [cb, mb, al, price] = await Promise.all([
         getContractBalance(),
         getMancerBalance(),
-        getMancerAllowance()
+        getMancerAllowance(),
+        getMancerUsdPrice()
       ]);
       setContractBalance(cb);
       setMancerBalance(mb);
       setAllowance(al);
+      setMancerPrice(price);
     } catch (e) {
       console.error("Failed to refresh balances:", e);
     }
@@ -222,9 +226,15 @@ export default function Wallet() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-muted-foreground">
-                Available in your connected wallet
-              </p>
+              {mancerPrice > 0 ? (
+                <p className="text-sm text-primary font-mono">
+                  ≈ {formatUsd(parseFloat(mancerBalance) * mancerPrice)} USD
+                </p>
+              ) : (
+                <p className="text-xs text-muted-foreground">
+                  Available in your connected wallet
+                </p>
+              )}
             </CardContent>
           </Card>
 
@@ -241,12 +251,24 @@ export default function Wallet() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-muted-foreground">
-                Available for trading on Nekomancer
-              </p>
+              {mancerPrice > 0 ? (
+                <p className="text-sm text-monad-green font-mono">
+                  ≈ {formatUsd(parseFloat(contractBalance) * mancerPrice)} USD
+                </p>
+              ) : (
+                <p className="text-xs text-muted-foreground">
+                  Available for trading on Nekomancer
+                </p>
+              )}
             </CardContent>
           </Card>
         </div>
+
+        {mancerPrice > 0 && (
+          <div className="text-center text-xs text-muted-foreground">
+            1 $MANCER = {formatUsd(mancerPrice)} USD • via DexScreener
+          </div>
+        )}
 
         <Card className="bg-card/50 backdrop-blur-xl border-white/10 shadow-xl overflow-hidden">
           <Tabs defaultValue="deposit" className="w-full">
