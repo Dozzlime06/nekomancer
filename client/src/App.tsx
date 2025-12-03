@@ -16,6 +16,8 @@ import Portfolio from "@/pages/Portfolio";
 import Wallet from "@/pages/Wallet";
 import CreateEvent from "@/pages/CreateEvent";
 import EventDetails from "@/pages/EventDetails";
+import Privacy from "@/pages/Privacy";
+import Terms from "@/pages/Terms";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -28,6 +30,8 @@ function Router() {
       <Route path="/wallet" component={Wallet} />
       <Route path="/create" component={CreateEvent} />
       <Route path="/event/:id" component={EventDetails} />
+      <Route path="/privacy" component={Privacy} />
+      <Route path="/terms" component={Terms} />
       <Route component={NotFound} />
     </Switch>
   );
