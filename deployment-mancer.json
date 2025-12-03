@@ -1,0 +1,13 @@
+{
+  "network": "monad-mainnet",
+  "chainId": 143,
+  "proxyAddress": "0x256f33EB879264679460Df8Ba0eAb96738bCec9B",
+  "implementationAddress": "0xE3F6a46F28edc478dc51f5d1F320D017B2A34774",
+  "proxyType": "UUPS",
+  "token": "0x4e12a73042b4964a065a11a3f7845dc0b2717777",
+  "tokenSymbol": "MANCER",
+  "treasury": "0xE9059B5f1C60ecf9C1F07ac2bBa148A75394f56e",
+  "owner": "0x0315eCb53F64b7A4bA56bb8A4DAB0D96F0856b60",
+  "version": "3.0.0-MANCER",
+  "deployedAt": "2025-12-03T09:37:03.035Z"
+}
