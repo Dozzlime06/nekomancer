@@ -24,8 +24,8 @@ export const monadMainnet = defineChain({
 });
 
 export const config = getDefaultConfig({
-  appName: "Monad Markets",
-  projectId: "5b1ae833abd22d348cbf5d53cf58b3b2",
+  appName: "Nekomancer",
+  projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || "5b1ae833abd22d348cbf5d53cf58b3b2",
   chains: [monadMainnet],
   transports: {
     [monadMainnet.id]: http("https://rpc.monad.xyz"),
