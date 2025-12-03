@@ -1,0 +1,8 @@
+{
+  "proxyAddress": "0x256f33EB879264679460Df8Ba0eAb96738bCec9B",
+  "oldImplementation": "0x3D42300534c35273EfE44e9a7caaF1cF42ec66Dd",
+  "newImplementation": "0x3D42300534c35273EfE44e9a7caaF1cF42ec66Dd",
+  "version": "V4-18DEC",
+  "upgradedAt": "2025-12-03T10:56:20.006Z",
+  "txHash": "0x70f780363a064b6e3b7a34917e3da3fc454d83f4dbab73a181fce1a4e180d109"
+}
