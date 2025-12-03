@@ -175,7 +175,7 @@ export async function getContractBalance(address: string): Promise<string> {
     const contract = getContract();
     const balance = await contract.getUserBalance(address);
     if (balance === null || balance === undefined) return "0";
-    return ethers.formatUnits(balance, 18);
+    return ethers.formatUnits(balance, 6);
   } catch (error) {
     console.error("Failed to get contract balance:", error);
     return "0";
@@ -321,12 +321,12 @@ export async function getMarketPrice(marketId: number, isYes: boolean): Promise<
 
 export function formatMancer(amount: bigint | null | undefined): string {
   if (amount === null || amount === undefined) return "0";
-  return ethers.formatUnits(amount, 18);
+  return ethers.formatUnits(amount, 6);
 }
 
 export function parseMancer(amount: string): bigint {
   if (!amount || amount === "") return BigInt(0);
-  return ethers.parseUnits(amount, 18);
+  return ethers.parseUnits(amount, 6);
 }
 
 // Legacy aliases for compatibility
