@@ -195,10 +195,11 @@ export default function EventDetails() {
   const yesPrice = total > BigInt(0) ? Number((market.noPool * BigInt(10000)) / total) / 10000 : 0.5;
   const noPrice = 1 - yesPrice;
   const currentPrice = selectedOption === "YES" ? yesPrice : noPrice;
-  const shares = parseFloat(amount) / currentPrice;
+  const safePrice = currentPrice > 0.001 ? currentPrice : 0.001;
+  const shares = parseFloat(amount) / safePrice;
   const potentialPayout = shares;
   const profit = potentialPayout - parseFloat(amount);
-  const returnPercentage = parseFloat(amount) > 0 ? ((profit / parseFloat(amount)) * 100).toFixed(0) : "0";
+  const returnPercentage = parseFloat(amount) > 0 && isFinite(profit) ? ((profit / parseFloat(amount)) * 100).toFixed(0) : "0";
   const volume = formatMancer(market.totalVolume);
   const deadline = new Date(Number(market.deadline) * 1000);
   const isExpired = deadline < new Date();
@@ -537,14 +538,14 @@ export default function EventDetails() {
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-muted-foreground">Avg. Price</span>
                         <span className="font-mono font-bold text-lg" data-testid="text-avg-price">
-                          {(currentPrice * 100).toFixed(0)}¢
+                          {currentPrice < 0.01 ? "<1" : (currentPrice * 100).toFixed(0)}¢
                         </span>
                       </div>
                       <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-muted-foreground">Est. Shares</span>
                         <span className="font-mono font-bold text-lg" data-testid="text-shares">
-                          {potentialPayout.toFixed(2)}
+                          {isFinite(shares) ? shares.toFixed(2) : "—"}
                         </span>
                       </div>
                       <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
@@ -552,7 +553,7 @@ export default function EventDetails() {
                         <span className="text-sm text-muted-foreground">Potential Profit</span>
                         <div className="flex items-center gap-2">
                           <span className="font-mono font-bold text-lg text-monad-green" data-testid="text-potential-return">
-                            +${profit.toFixed(2)}
+                            {isFinite(profit) ? `+$${profit.toFixed(2)}` : "—"}
                           </span>
                           <Badge className={`${selectedOption === "YES" ? 'bg-monad-green/20 text-monad-green' : 'bg-monad-pink/20 text-monad-pink'} font-mono`}>
                             {returnPercentage}%
