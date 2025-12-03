@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Clock, TrendingUp, Users, Info, Share2, AlertCircle, Loader2, Zap, ChevronUp, ChevronDown, Gavel, CheckCircle, XCircle } from "lucide-react";
+import { ArrowLeft, Clock, TrendingUp, Users, Info, Share2, AlertCircle, AlertTriangle, Loader2, Zap, ChevronUp, ChevronDown, Gavel, CheckCircle, XCircle } from "lucide-react";
 import { Link, useRoute } from "wouter";
 import { formatDistanceToNow } from "date-fns";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -555,20 +555,31 @@ export default function EventDetails() {
                         <span className="text-sm text-muted-foreground">Potential Profit</span>
                         <div className="flex flex-col items-end gap-1">
                           <div className="flex items-center gap-2">
-                            <span className="font-mono font-bold text-lg text-monad-green" data-testid="text-potential-return">
-                              {isFinite(profit) ? `+${profit.toFixed(2)} $MANCER` : "—"}
+                            <span className={`font-mono font-bold text-lg ${profit <= 0 ? 'text-muted-foreground' : 'text-monad-green'}`} data-testid="text-potential-return">
+                              {isFinite(profit) ? (profit <= 0 ? "No profit" : `+${profit.toFixed(2)} $MANCER`) : "—"}
                             </span>
-                            <Badge className={`${selectedOption === "YES" ? 'bg-monad-green/20 text-monad-green' : 'bg-monad-pink/20 text-monad-pink'} font-mono`}>
-                              {returnPercentage}%
-                            </Badge>
+                            {profit > 0 && (
+                              <Badge className={`${selectedOption === "YES" ? 'bg-monad-green/20 text-monad-green' : 'bg-monad-pink/20 text-monad-pink'} font-mono`}>
+                                {returnPercentage}%
+                              </Badge>
+                            )}
                           </div>
-                          {mancerPrice > 0 && isFinite(profit) && (
+                          {mancerPrice > 0 && isFinite(profit) && profit > 0 && (
                             <span className="text-xs text-muted-foreground font-mono">
                               ≈ {formatUsd(profit * mancerPrice)} USD
                             </span>
                           )}
                         </div>
                       </div>
+                      
+                      {currentPrice >= 0.99 && (
+                        <div className="mt-3 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
+                          <p className="text-xs text-amber-400 flex items-center gap-2">
+                            <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+                            <span>Price at 100% = no profit. Consider buying <strong>{selectedOption === "YES" ? "NO" : "YES"}</strong> instead for higher returns.</span>
+                          </p>
+                        </div>
+                      )}
                     </div>
 
                     <Button 
