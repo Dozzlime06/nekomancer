@@ -12,7 +12,7 @@ import { useState, useEffect } from "react";
 import { useContract } from "@/hooks/useContract";
 import { usePrivy } from "@privy-io/react-auth";
 import { toast } from "sonner";
-import { getMarket, getPosition, Market, MarketStatus, formatMancer, Position, categoryToString, Category } from "@/lib/contract";
+import { getMarket, getPosition, Market, MarketStatus, formatMancer, Position, categoryToString, Category, getMancerUsdPrice, formatUsd } from "@/lib/contract";
 
 function generatePriceHistory(currentYesPrice: number) {
   const history = [];
@@ -44,17 +44,19 @@ export default function EventDetails() {
   const [position, setPosition] = useState<Position | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [contractBalance, setContractBalance] = useState("0");
+  const [mancerPrice, setMancerPrice] = useState<number>(0);
 
   const { isConnected, address, buyShares, sellShares, proposeOutcome, finalizeResolution, claimWinnings, loading, error, getContractBalance } = useContract();
   const { login } = usePrivy();
 
   const loadMarket = async () => {
     try {
-      const data = await getMarket(marketId);
-      console.log("Market data:", data);
-      console.log("Market status:", data?.status, "MarketStatus.OPEN:", MarketStatus.OPEN);
-      console.log("Deadline:", data?.deadline, "Now:", Date.now() / 1000);
+      const [data, price] = await Promise.all([
+        getMarket(marketId),
+        getMancerUsdPrice()
+      ]);
       setMarket(data);
+      setMancerPrice(price);
       if (address) {
         const pos = await getPosition(marketId, address);
         setPosition(pos);
@@ -551,13 +553,20 @@ export default function EventDetails() {
                       <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-muted-foreground">Potential Profit</span>
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono font-bold text-lg text-monad-green" data-testid="text-potential-return">
-                            {isFinite(profit) ? `+$${profit.toFixed(2)}` : "—"}
-                          </span>
-                          <Badge className={`${selectedOption === "YES" ? 'bg-monad-green/20 text-monad-green' : 'bg-monad-pink/20 text-monad-pink'} font-mono`}>
-                            {returnPercentage}%
-                          </Badge>
+                        <div className="flex flex-col items-end gap-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono font-bold text-lg text-monad-green" data-testid="text-potential-return">
+                              {isFinite(profit) ? `+${profit.toFixed(2)} $MANCER` : "—"}
+                            </span>
+                            <Badge className={`${selectedOption === "YES" ? 'bg-monad-green/20 text-monad-green' : 'bg-monad-pink/20 text-monad-pink'} font-mono`}>
+                              {returnPercentage}%
+                            </Badge>
+                          </div>
+                          {mancerPrice > 0 && isFinite(profit) && (
+                            <span className="text-xs text-muted-foreground font-mono">
+                              ≈ {formatUsd(profit * mancerPrice)} USD
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
