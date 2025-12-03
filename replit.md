@@ -1,12 +1,28 @@
-# Monad Markets - Prediction Market Platform
+# Nekomancer - Prediction Market Platform
 
 ## Overview
 
-Monad Markets is a full-stack prediction market platform built for the Monad blockchain. It enables users to create and participate in prediction markets across multiple categories including crypto prices, sports, politics, and pop culture. The platform features real-time price discovery, automated oracle resolution, and wallet integration through RainbowKit.
+Nekomancer is a fully trustless crypto prediction market platform built for the Monad blockchain. It uses $MANCER token (0x4e12a73042b4964a065a11a3f7845dc0b2717777) as the native prediction currency. The platform features a dark-only theme with glassmorphism design, purple hooded cat branding, Privy embedded wallets for authentication, and fully automated on-chain resolution with bond-based permissionless oracle. All trading uses $MANCER tokens with 2% platform fees auto-forwarding to treasury for buyback and burn.
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+
+## Smart Contract Deployment
+
+**Network**: Monad Mainnet (Chain ID: 143)
+**Proxy Address**: 0x256f33EB879264679460Df8Ba0eAb96738bCec9B
+**Implementation Address**: 0xE3F6a46F28edc478dc51f5d1F320D017B2A34774
+**Proxy Type**: UUPS (Upgradeable)
+
+**Token**: $MANCER (0x4e12a73042b4964a065a11a3f7845dc0b2717777)
+**Treasury**: 0xE9059B5f1C60ecf9C1F07ac2bBa148A75394f56e
+
+**Oracle Settings**:
+- Proposal Bond: 5 $MANCER
+- Challenge Bond: 10 $MANCER  
+- Challenge Window: 24 hours
+- Platform Fee: 2% → Treasury (buyback & burn)
 
 ## System Architecture
 
@@ -14,7 +30,7 @@ Preferred communication style: Simple, everyday language.
 
 **Framework**: React 18 with TypeScript using Vite as the build tool
 
-**Styling**: TailwindCSS v4 with shadcn/ui component library (New York style variant). Custom CSS variables enable dark/light theme support with purple/green/pink accent colors for Monad branding.
+**Styling**: TailwindCSS v4 with shadcn/ui component library (New York style variant). Dark-only theme with glassmorphism effects, purple/pink accent colors for Nekomancer branding.
 
 **State Management**: 
 - React Query (@tanstack/react-query) for server state with infinite stale time and disabled refetch on window focus
@@ -27,14 +43,14 @@ Preferred communication style: Simple, everyday language.
 - `/event/:id` - Individual event details with betting interface
 - `/portfolio` - User's active bets and history
 - `/leaderboard` - Top performers ranking
-- `/wallet` - Deposit/withdraw funds
+- `/wallet` - Deposit/withdraw $MANCER funds
 - `/create` - Create new prediction events
 
 **Web3 Integration**:
-- RainbowKit for wallet connection UI
-- Wagmi for Ethereum interactions
+- Privy embedded wallets for authentication (App ID: cmigfq0mr004ljf0c1j36gpk3)
+- Ethers.js for Ethereum interactions
 - Custom Monad mainnet configuration (Chain ID: 143)
-- Native MON token support
+- $MANCER token support (18 decimals)
 
 **Charts**: Chart.js with react-chartjs-2 for vote visualization and price history
 
@@ -65,9 +81,11 @@ Preferred communication style: Simple, everyday language.
 **Logging**: Custom middleware logs all API requests with timing, method, path, and status code
 
 **Oracle Resolution System**:
-- Automated event resolution via CoinGecko API for crypto price events
-- Cron job checks for expired events and resolves them
-- Resolution metadata stored including source, proof, and resolver
+- Bond-based permissionless oracle for decentralized resolution
+- Anyone can propose outcomes by staking $MANCER bond
+- Challenge mechanism with higher bond requirement
+- 24-hour challenge window before finalization
+- Winners receive losers' bonds as reward
 
 ### Data Architecture
 
@@ -114,6 +132,7 @@ Preferred communication style: Simple, everyday language.
 - `DATABASE_URL` - Required for Neon Postgres connection
 - `NODE_ENV` - Development/production mode
 - `REPL_ID` - Replit-specific identifier
+- `DEPLOYER_PRIVATE_KEY` - For contract deployments
 
 **Development Tools**:
 - Replit-specific Vite plugins for error overlay, cartographer, and dev banner
@@ -128,10 +147,9 @@ Preferred communication style: Simple, everyday language.
 - **Drizzle Kit** - Schema management and migrations
 
 ### Web3 & Blockchain
-- **RainbowKit** (@rainbow-me/rainbowkit) - Wallet connection UI components
-- **Wagmi** - React hooks for Ethereum
-- **Viem** - TypeScript Ethereum library
+- **Privy** (@privy-io/react-auth) - Embedded wallet authentication
 - **Ethers.js** - Ethereum wallet and provider utilities
+- **Viem** - TypeScript Ethereum library
 
 ### UI & Styling
 - **Radix UI** - Unstyled accessible component primitives (20+ components)
@@ -150,6 +168,7 @@ Preferred communication style: Simple, everyday language.
 - **esbuild** - Fast JavaScript bundler for server
 - **tsx** - TypeScript execution for Node.js
 - **Replit Vite Plugins** - Error modal, cartographer, dev banner
+- **Solc** - Solidity compiler for smart contracts
 
 ### External APIs
 - **CoinGecko API** - Cryptocurrency price data for oracle resolution (free tier, no auth required)
