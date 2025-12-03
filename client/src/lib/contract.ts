@@ -332,3 +332,43 @@ export function parseMancer(amount: string): bigint {
 // Legacy aliases for compatibility
 export const formatUsdc = formatMancer;
 export const parseUsdc = parseMancer;
+
+// MANCER token price cache
+let cachedMancerPrice: number | null = null;
+let lastPriceFetch: number = 0;
+const PRICE_CACHE_DURATION = 60000; // 1 minute
+
+export async function getMancerUsdPrice(): Promise<number> {
+  const now = Date.now();
+  if (cachedMancerPrice !== null && now - lastPriceFetch < PRICE_CACHE_DURATION) {
+    return cachedMancerPrice;
+  }
+  
+  try {
+    const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${MANCER_ADDRESS}`);
+    const data = await response.json();
+    
+    if (data.pairs && data.pairs.length > 0) {
+      const pair = data.pairs.reduce((max: any, p: any) => 
+        (p.liquidity?.usd || 0) > (max.liquidity?.usd || 0) ? p : max
+      , data.pairs[0]);
+      
+      const price = parseFloat(pair.priceUsd || "0");
+      cachedMancerPrice = price;
+      lastPriceFetch = now;
+      return price;
+    }
+  } catch (error) {
+    console.error("Failed to fetch MANCER price:", error);
+  }
+  
+  return cachedMancerPrice || 0;
+}
+
+export function formatUsd(amount: number): string {
+  if (amount >= 1000000) return `$${(amount / 1000000).toFixed(2)}M`;
+  if (amount >= 1000) return `$${(amount / 1000).toFixed(2)}K`;
+  if (amount >= 1) return `$${amount.toFixed(2)}`;
+  if (amount >= 0.01) return `$${amount.toFixed(4)}`;
+  return `$${amount.toFixed(6)}`;
+}
