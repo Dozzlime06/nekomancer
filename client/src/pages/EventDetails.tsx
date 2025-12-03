@@ -81,15 +81,22 @@ export default function EventDetails() {
       return;
     }
     
-    const balanceNum = parseFloat(contractBalance);
-    const amountNum = parseFloat(amount);
-    if (amountNum > balanceNum) {
-      toast.error("Insufficient balance. Please deposit $MANCER first.");
+    const usdAmount = parseFloat(amount);
+    if (mancerPrice <= 0) {
+      toast.error("Unable to fetch $MANCER price. Please try again.");
       return;
     }
     
-    const toastId = toast.loading(`Buying ${selectedOption} shares...`);
-    const success = await buyShares(marketId, selectedOption === "YES", amount);
+    const mancerAmount = usdAmount / mancerPrice;
+    const balanceNum = parseFloat(contractBalance);
+    
+    if (mancerAmount > balanceNum) {
+      toast.error(`Insufficient balance. You need ${mancerAmount.toFixed(2)} $MANCER but have ${balanceNum.toFixed(2)}`);
+      return;
+    }
+    
+    const toastId = toast.loading(`Buying ${selectedOption} shares for $${usdAmount.toFixed(2)} USD...`);
+    const success = await buyShares(marketId, selectedOption === "YES", mancerAmount.toString());
     toast.dismiss(toastId);
     if (success) {
       toast.success(`Successfully bought ${selectedOption} shares!`);
@@ -198,10 +205,15 @@ export default function EventDetails() {
   const noPrice = 1 - yesPrice;
   const currentPrice = selectedOption === "YES" ? yesPrice : noPrice;
   const safePrice = currentPrice > 0.001 ? currentPrice : 0.001;
-  const shares = parseFloat(amount) / safePrice;
+  
+  const usdInputAmount = parseFloat(amount) || 0;
+  const mancerInputAmount = mancerPrice > 0 ? usdInputAmount / mancerPrice : 0;
+  const shares = mancerInputAmount / safePrice;
   const potentialPayout = shares;
-  const profit = potentialPayout - parseFloat(amount);
-  const returnPercentage = parseFloat(amount) > 0 && isFinite(profit) ? ((profit / parseFloat(amount)) * 100).toFixed(0) : "0";
+  const profitMancer = potentialPayout - mancerInputAmount;
+  const profitUsd = profitMancer * mancerPrice;
+  const profit = profitUsd;
+  const returnPercentage = mancerInputAmount > 0 && isFinite(profitMancer) ? ((profitMancer / mancerInputAmount) * 100).toFixed(0) : "0";
   const volume = formatMancer(market.totalVolume);
   const deadline = new Date(Number(market.deadline) * 1000);
   const isExpired = deadline < new Date();
@@ -506,9 +518,9 @@ export default function EventDetails() {
 
                     <div className="space-y-2">
                       <div className="flex justify-between text-xs">
-                        <span className="text-muted-foreground">Amount ($MANCER)</span>
+                        <span className="text-muted-foreground">Amount (USD)</span>
                         <span className="text-primary font-medium" data-testid="text-balance">
-                          Balance: {parseFloat(contractBalance).toFixed(2)} $MANCER
+                          Balance: {mancerPrice > 0 ? formatUsd(parseFloat(contractBalance) * mancerPrice) : parseFloat(contractBalance).toFixed(2)} {mancerPrice > 0 ? 'USD' : '$MANCER'}
                         </span>
                       </div>
                       <div className="relative">
@@ -517,12 +529,18 @@ export default function EventDetails() {
                           type="number" 
                           value={amount} 
                           onChange={(e) => setAmount(e.target.value)}
+                          placeholder="0.00"
                           className="pl-9 h-14 text-2xl font-mono font-bold bg-white/5 border-white/10 rounded-xl focus:border-primary/50 focus:ring-primary/20"
                           data-testid="input-amount"
                         />
                       </div>
+                      {mancerPrice > 0 && parseFloat(amount) > 0 && (
+                        <p className="text-xs text-muted-foreground text-center">
+                          = {(parseFloat(amount) / mancerPrice).toFixed(2)} $MANCER
+                        </p>
+                      )}
                       <div className="flex gap-2">
-                        {[10, 50, 100, 500].map((val) => (
+                        {[1, 5, 10, 50].map((val) => (
                           <Button
                             key={val}
                             variant="outline"
