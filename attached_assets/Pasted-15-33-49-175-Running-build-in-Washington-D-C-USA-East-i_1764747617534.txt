@@ -1,0 +1,164 @@
+15:33:49.175 Running build in Washington, D.C., USA (East) – iad1
+15:33:49.176 Build machine configuration: 2 cores, 8 GB
+15:33:49.308 Cloning github.com/Dozzlime06/nekomancer (Branch: main, Commit: 9c8d43f)
+15:33:49.309 Previous build caches not available.
+15:33:51.515 Cloning completed: 2.206s
+15:33:51.949 Running "vercel build"
+15:33:52.360 Vercel CLI 48.12.0
+15:33:53.029 Running "install" command: `npm install`...
+15:34:56.159 npm warn ERESOLVE overriding peer dependency
+15:35:01.101 npm warn deprecated @paulmillr/qr@0.2.1: The package is now available as "qr": npm install qr
+15:35:01.811 npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+15:35:02.176 npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+15:35:09.591 npm warn deprecated @walletconnect/sign-client@2.21.1: Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases
+15:35:10.140 npm warn deprecated @walletconnect/universal-provider@2.21.1: Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases
+15:35:10.527 npm warn deprecated @walletconnect/ethereum-provider@2.21.1: Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases
+15:35:10.682 npm warn deprecated @walletconnect/sign-client@2.21.0: Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases
+15:35:10.700 npm warn deprecated @walletconnect/sign-client@2.21.0: Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases
+15:35:10.723 npm warn deprecated @walletconnect/sign-client@2.21.0: Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases
+15:35:11.061 npm warn deprecated @walletconnect/universal-provider@2.21.0: Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases
+15:35:11.092 npm warn deprecated @walletconnect/universal-provider@2.21.0: Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases
+15:35:11.226 npm warn deprecated @walletconnect/universal-provider@2.21.0: Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases
+15:35:30.861 
+15:35:30.863 added 995 packages, and audited 996 packages in 2m
+15:35:30.864 
+15:35:30.864 125 packages are looking for funding
+15:35:30.865   run `npm fund` for details
+15:35:30.884 
+15:35:30.884 6 vulnerabilities (2 low, 4 moderate)
+15:35:30.884 
+15:35:30.885 To address all issues (including breaking changes), run:
+15:35:30.885   npm audit fix --force
+15:35:30.885 
+15:35:30.885 Run `npm audit` for details.
+15:35:31.518 Building for Vercel...
+15:35:31.569 [36mvite v7.2.6 [32mbuilding client environment for production...[36m[39m
+15:35:31.646 transforming...
+15:35:34.025 [32m✓[39m 1356 modules transformed.
+15:35:34.031 [31m✗[39m Build failed in 2.43s
+15:35:34.033 node:internal/modules/run_main:107
+15:35:34.034     triggerUncaughtException(
+15:35:34.034     ^
+15:35:34.034 
+15:35:34.035 [31m[vite:asset] Could not load /vercel/path0/attached_assets/IMG_9375_1764744382242.jpeg (imported by client/src/pages/Home.tsx): ENOENT: no such file or directory, open '/vercel/path0/attached_assets/IMG_9375_1764744382242.jpeg'[39m
+15:35:34.035     at async open (node:internal/fs/promises:642:25)
+15:35:34.036     at async Object.readFile (node:internal/fs/promises:1279:14)
+15:35:34.036     at async fileToBuiltUrl (file:///vercel/path0/node_modules/vite/dist/node/chunks/config.js:8777:18)
+15:35:34.036     at async Object.handler (file:///vercel/path0/node_modules/vite/dist/node/chunks/config.js:8671:17)
+15:35:34.036     at async PluginDriver.hookFirstAndGetPlugin (file:///vercel/path0/node_modules/rollup/dist/es/shared/node-entry.js:22333:28)
+15:35:34.036     at async file:///vercel/path0/node_modules/rollup/dist/es/shared/node-entry.js:21333:33
+15:35:34.036     at async Queue.work (file:///vercel/path0/node_modules/rollup/dist/es/shared/node-entry.js:22561:32) {
+15:35:34.037   errno: -2,
+15:35:34.037   code: 'PLUGIN_ERROR',
+15:35:34.037   syscall: 'open',
+15:35:34.037   path: '/vercel/path0/attached_assets/IMG_9375_1764744382242.jpeg',
+15:35:34.037   pluginCode: 'ENOENT',
+15:35:34.037   plugin: 'vite:asset',
+15:35:34.037   hook: 'load',
+15:35:34.037   watchFiles: [
+15:35:34.037     '/vercel/path0/client/index.html',
+15:35:34.037     '/vercel/path0/client/src/main.tsx',
+15:35:34.037     '/vercel/path0/package.json',
+15:35:34.037     '/vercel/path0/node_modules/react/jsx-runtime.js',
+15:35:34.038     '/vercel/path0/node_modules/react-dom/client.js',
+15:35:34.038     '/vercel/path0/client/src/App.tsx',
+15:35:34.038     '/vercel/path0/client/src/index.css',
+15:35:34.038     '/vercel/path0/node_modules/tailwindcss/index.css',
+15:35:34.038     '/vercel/path0/node_modules/tw-animate-css/dist/tw-animate.css',
+15:35:34.038     '/vercel/path0/client/src/components/layout/Navbar.tsx',
+15:35:34.038     '/vercel/path0/client/src/components/market/EventCard.tsx',
+15:35:34.038     '/vercel/path0/client/src/components/market/EventVoteChart.tsx',
+15:35:34.038     '/vercel/path0/client/src/components/ui/accordion.tsx',
+15:35:34.038     '/vercel/path0/client/src/components/ui/alert-dialog.tsx',
+15:35:34.038     '/vercel/path0/client/src/components/ui/alert.tsx',
+15:35:34.038     '/vercel/path0/client/src/components/ui/aspect-ratio.tsx',
+15:35:34.038     '/vercel/path0/client/src/components/ui/avatar.tsx',
+15:35:34.039     '/vercel/path0/client/src/components/ui/badge.tsx',
+15:35:34.039     '/vercel/path0/client/src/components/ui/breadcrumb.tsx',
+15:35:34.039     '/vercel/path0/client/src/components/ui/button-group.tsx',
+15:35:34.039     '/vercel/path0/client/src/components/ui/button.tsx',
+15:35:34.039     '/vercel/path0/client/src/components/ui/calendar.tsx',
+15:35:34.039     '/vercel/path0/client/src/components/ui/card.tsx',
+15:35:34.040     '/vercel/path0/client/src/components/ui/carousel.tsx',
+15:35:34.040     '/vercel/path0/client/src/components/ui/chart.tsx',
+15:35:34.040     '/vercel/path0/client/src/components/ui/checkbox.tsx',
+15:35:34.040     '/vercel/path0/client/src/components/ui/collapsible.tsx',
+15:35:34.040     '/vercel/path0/client/src/components/ui/command.tsx',
+15:35:34.040     '/vercel/path0/client/src/components/ui/context-menu.tsx',
+15:35:34.040     '/vercel/path0/client/src/components/ui/dialog.tsx',
+15:35:34.040     '/vercel/path0/client/src/components/ui/drawer.tsx',
+15:35:34.040     '/vercel/path0/client/src/components/ui/dropdown-menu.tsx',
+15:35:34.043     '/vercel/path0/client/src/components/ui/empty.tsx',
+15:35:34.043     '/vercel/path0/client/src/components/ui/field.tsx',
+15:35:34.043     '/vercel/path0/client/src/components/ui/form.tsx',
+15:35:34.043     '/vercel/path0/client/src/components/ui/hover-card.tsx',
+15:35:34.043     '/vercel/path0/client/src/components/ui/input-group.tsx',
+15:35:34.044     '/vercel/path0/client/src/components/ui/input-otp.tsx',
+15:35:34.046     '/vercel/path0/client/src/components/ui/input.tsx',
+15:35:34.046     '/vercel/path0/client/src/components/ui/item.tsx',
+15:35:34.052     '/vercel/path0/client/src/components/ui/kbd.tsx',
+15:35:34.052     '/vercel/path0/client/src/components/ui/label.tsx',
+15:35:34.052     '/vercel/path0/client/src/components/ui/menubar.tsx',
+15:35:34.052     '/vercel/path0/client/src/components/ui/navigation-menu.tsx',
+15:35:34.052     '/vercel/path0/client/src/components/ui/pagination.tsx',
+15:35:34.052     '/vercel/path0/client/src/components/ui/popover.tsx',
+15:35:34.052     '/vercel/path0/client/src/components/ui/progress.tsx',
+15:35:34.052     '/vercel/path0/client/src/components/ui/radio-group.tsx',
+15:35:34.052     '/vercel/path0/client/src/components/ui/resizable.tsx',
+15:35:34.052     '/vercel/path0/client/src/components/ui/scroll-area.tsx',
+15:35:34.052     '/vercel/path0/client/src/components/ui/select.tsx',
+15:35:34.052     '/vercel/path0/client/src/components/ui/separator.tsx',
+15:35:34.052     '/vercel/path0/client/src/components/ui/sheet.tsx',
+15:35:34.052     '/vercel/path0/client/src/components/ui/sidebar.tsx',
+15:35:34.053     '/vercel/path0/client/src/components/ui/skeleton.tsx',
+15:35:34.053     '/vercel/path0/client/src/components/ui/slider.tsx',
+15:35:34.053     '/vercel/path0/client/src/components/ui/sonner.tsx',
+15:35:34.053     '/vercel/path0/client/src/components/ui/spinner.tsx',
+15:35:34.053     '/vercel/path0/client/src/components/ui/switch.tsx',
+15:35:34.053     '/vercel/path0/client/src/components/ui/table.tsx',
+15:35:34.053     '/vercel/path0/client/src/components/ui/tabs.tsx',
+15:35:34.053     '/vercel/path0/client/src/components/ui/textarea.tsx',
+15:35:34.053     '/vercel/path0/client/src/components/ui/toast.tsx',
+15:35:34.053     '/vercel/path0/client/src/components/ui/toaster.tsx',
+15:35:34.053     '/vercel/path0/client/src/components/ui/toggle-group.tsx',
+15:35:34.053     '/vercel/path0/client/src/components/ui/toggle.tsx',
+15:35:34.053     '/vercel/path0/client/src/components/ui/tooltip.tsx',
+15:35:34.053     '/vercel/path0/client/src/hooks/use-mobile.tsx',
+15:35:34.053     '/vercel/path0/client/src/hooks/use-toast.ts',
+15:35:34.054     '/vercel/path0/client/src/hooks/useContract.tsx',
+15:35:34.054     '/vercel/path0/client/src/hooks/useWallet.tsx',
+15:35:34.054     '/vercel/path0/client/src/lib/api.ts',
+15:35:34.054     '/vercel/path0/client/src/lib/contract.ts',
+15:35:34.054     '/vercel/path0/client/src/lib/monad.ts',
+15:35:34.054     '/vercel/path0/client/src/lib/queryClient.ts',
+15:35:34.054     '/vercel/path0/client/src/lib/utils.ts',
+15:35:34.054     '/vercel/path0/client/src/lib/wagmi.ts',
+15:35:34.054     '/vercel/path0/client/src/pages/CreateEvent.tsx',
+15:35:34.054     '/vercel/path0/client/src/pages/EventDetails.tsx',
+15:35:34.054     '/vercel/path0/client/src/pages/Home.tsx',
+15:35:34.054     '/vercel/path0/client/src/pages/Leaderboard.tsx',
+15:35:34.054     '/vercel/path0/client/src/pages/Markets.tsx',
+15:35:34.054     '/vercel/path0/client/src/pages/Portfolio.tsx',
+15:35:34.054     '/vercel/path0/client/src/pages/Wallet.tsx',
+15:35:34.054     '/vercel/path0/client/src/pages/not-found.tsx',
+15:35:34.054     '/vercel/path0/client/src/types/global.d.ts',
+15:35:34.054     '*',
+15:35:34.054     'src/**/*.{aspx,astro,cjs,css,cts,eex,erb,gjs,gts,haml,handlebars,hbs,heex,html,jade,js,jsx,liquid,md,mdx,mjs,mts,mustache,njk,nunjucks,php,pug,py,razor,rb,rhtml,rs,slim,svelte,tpl,ts,tsx,twig,vue}',
+15:35:34.054     '/vercel/path0/node_modules/react/cjs/react-jsx-runtime.production.js',
+15:35:34.054     '/vercel/path0/node_modules/@tanstack/react-query/build/modern/index.js',
+15:35:34.054     '/vercel/path0/node_modules/wouter/src/index.js',
+15:35:34.054     '/vercel/path0/node_modules/wagmi/dist/esm/exports/index.js',
+15:35:34.055     '/vercel/path0/node_modules/@rainbow-me/rainbowkit/dist/index.js',
+15:35:34.055     '/vercel/path0/node_modules/sonner/dist/index.mjs',
+15:35:34.055     '/vercel/path0/node_modules/@rainbow-me/rainbowkit/dist/index.css',
+15:35:34.055     '/vercel/path0/node_modules/react-dom/cjs/react-dom-client.production.js',
+15:35:34.055     '/vercel/path0/node_modules/react/index.js',
+15:35:34.055     '/vercel/path0/node_modules/scheduler/index.js',
+15:35:34.055     '/vercel/path0/node_modules/react-dom/index.js',
+15:35:34.055     '/vercel/path0/node_modules/@tanstack/query-core/build/modern/index.js',
+15:35:34.055     ... 1305 more items
+15:35:34.055   ]
+15:35:34.055 }
+15:35:34.056 
+15:35:34.056 Node.js v24.11.1
+15:35:34.076 Error: Command "node scripts/vercel-build.mjs" exited with 1
