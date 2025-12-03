@@ -37,37 +37,23 @@ export function useContract() {
     }
     
     try {
-      const provider = await activeWallet.getEthersProvider();
-      
-      const network = await provider.getNetwork();
-      if (Number(network.chainId) !== MONAD_CHAIN_ID) {
-        try {
-          await activeWallet.switchChain(MONAD_CHAIN_ID);
-          await new Promise(resolve => setTimeout(resolve, 500));
-        } catch (switchError: any) {
-          if (window.ethereum) {
-            try {
-              await window.ethereum.request({
-                method: 'wallet_addEthereumChain',
-                params: [{
-                  chainId: '0x8f',
-                  chainName: 'Monad',
-                  nativeCurrency: { name: 'MON', symbol: 'MON', decimals: 18 },
-                  rpcUrls: ['https://rpc.monad.xyz'],
-                  blockExplorerUrls: ['https://monadvision.com']
-                }],
-              });
-            } catch (addError) {
-              throw new Error("Please add Monad network to your wallet");
-            }
-          } else {
-            throw new Error("Please switch to Monad network (Chain ID 143)");
-          }
-        }
+      // Try to switch to Monad chain first
+      try {
+        await activeWallet.switchChain(MONAD_CHAIN_ID);
+        await new Promise(resolve => setTimeout(resolve, 500));
+      } catch (switchError: any) {
+        console.log("Chain switch error (may be already on correct chain):", switchError);
       }
+      
+      // Get the EIP-1193 provider from Privy wallet
+      const ethereumProvider = await activeWallet.getEthereumProvider();
+      
+      // Wrap with ethers.js BrowserProvider
+      const provider = new ethers.BrowserProvider(ethereumProvider);
       
       return provider.getSigner();
     } catch (e: any) {
+      console.error("getSigner error:", e);
       if (e.code === 4001) {
         throw new Error("Connection rejected by user");
       }
