@@ -4,11 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Wallet, TrendingUp, History, DollarSign, ArrowUpRight, ArrowDownRight, Trophy, Loader2, Coins, ExternalLink } from "lucide-react";
 import { useContract } from "@/hooks/useContract";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { usePrivy } from "@privy-io/react-auth";
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { formatDistanceToNow } from "date-fns";
-import { getAllMarkets, getPosition, Market, MarketStatus, formatUsdc, Position } from "@/lib/contract";
+import { getAllMarkets, getPosition, Market, MarketStatus, formatMancer, Position } from "@/lib/contract";
 import { toast } from "sonner";
 
 interface PositionWithMarket {
@@ -18,7 +18,7 @@ interface PositionWithMarket {
 
 export default function Portfolio() {
   const { isConnected, address, getContractBalance, claimWinnings, loading } = useContract();
-  const { openConnectModal } = useConnectModal();
+  const { login } = usePrivy();
   
   const [contractBalance, setContractBalance] = useState("0");
   const [positions, setPositions] = useState<PositionWithMarket[]>([]);
@@ -80,7 +80,7 @@ export default function Portfolio() {
             <p className="text-muted-foreground mb-6 max-w-md">
               Connect your wallet to view your on-chain portfolio and positions.
             </p>
-            <Button onClick={() => openConnectModal?.()} className="font-bold" data-testid="button-connect-wallet">
+            <Button onClick={login} className="font-bold" data-testid="button-connect-wallet">
               <Wallet className="mr-2 h-4 w-4" /> Connect Wallet
             </Button>
           </div>
@@ -215,12 +215,12 @@ export default function Portfolio() {
                           <div className="text-right space-y-1">
                             {position.yesShares > BigInt(0) && (
                               <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-monad-green/20 text-monad-green">
-                                {formatUsdc(position.yesShares)} YES
+                                {formatMancer(position.yesShares)} YES
                               </div>
                             )}
                             {position.noShares > BigInt(0) && (
                               <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-monad-pink/20 text-monad-pink">
-                                {formatUsdc(position.noShares)} NO
+                                {formatMancer(position.noShares)} NO
                               </div>
                             )}
                             <div className="text-xs text-muted-foreground">
