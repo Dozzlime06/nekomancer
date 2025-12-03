@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useContract } from "@/hooks/useContract";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { usePrivy } from "@privy-io/react-auth";
 import { toast } from "sonner";
 
 export default function Wallet() {
@@ -22,19 +22,19 @@ export default function Wallet() {
     isConnected, 
     loading, 
     error,
-    approveUsdc,
+    approveMancer,
     deposit,
     withdraw,
     getContractBalance,
-    getUsdcBalance,
-    getUsdcAllowance
+    getMancerBalance,
+    getMancerAllowance
   } = useContract();
   
-  const { openConnectModal } = useConnectModal();
+  const { login, ready } = usePrivy();
   const [depositAmount, setDepositAmount] = useState("");
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [contractBalance, setContractBalance] = useState("0");
-  const [usdcBalance, setUsdcBalance] = useState("0");
+  const [mancerBalance, setMancerBalance] = useState("0");
   const [allowance, setAllowance] = useState("0");
   const [refreshing, setRefreshing] = useState(false);
 
@@ -42,13 +42,13 @@ export default function Wallet() {
     if (!isConnected) return;
     setRefreshing(true);
     try {
-      const [cb, ub, al] = await Promise.all([
+      const [cb, mb, al] = await Promise.all([
         getContractBalance(),
-        getUsdcBalance(),
-        getUsdcAllowance()
+        getMancerBalance(),
+        getMancerAllowance()
       ]);
       setContractBalance(cb);
-      setUsdcBalance(ub);
+      setMancerBalance(mb);
       setAllowance(al);
     } catch (e) {
       console.error("Failed to refresh balances:", e);
@@ -63,7 +63,7 @@ export default function Wallet() {
   const handleDeposit = async () => {
     if (!isConnected) {
       toast.error("Please connect your wallet first");
-      openConnectModal?.();
+      login();
       return;
     }
 
@@ -73,32 +73,32 @@ export default function Wallet() {
     }
 
     const depositNum = parseFloat(depositAmount);
-    const walletNum = parseFloat(usdcBalance);
+    const walletNum = parseFloat(mancerBalance);
     
     if (walletNum < depositNum) {
-      toast.error(`Insufficient USDC in wallet. You have ${walletNum.toFixed(2)} USDC but tried to deposit ${depositNum.toFixed(2)} USDC.`);
+      toast.error(`Insufficient $MANCER in wallet. You have ${walletNum.toFixed(2)} $MANCER but tried to deposit ${depositNum.toFixed(2)} $MANCER.`);
       return;
     }
 
     const needsApprovalNow = parseFloat(allowance) < depositNum;
     
     if (needsApprovalNow) {
-      const toastId = toast.loading("Approving USDC... Please confirm in your wallet");
-      const approveSuccess = await approveUsdc(depositAmount);
+      const toastId = toast.loading("Approving $MANCER... Please confirm in your wallet");
+      const approveSuccess = await approveMancer(depositAmount);
       toast.dismiss(toastId);
       if (!approveSuccess) {
         if (error) {
           toast.error(error);
         } else {
-          toast.error("Approval failed. Make sure you have USDC on Monad network.");
+          toast.error("Approval failed. Make sure you have $MANCER on Monad network.");
         }
         return;
       }
-      toast.success("USDC approved!");
+      toast.success("$MANCER approved!");
       await refreshBalances();
     }
 
-    const toastId = toast.loading("Depositing USDC... Please confirm in your wallet");
+    const toastId = toast.loading("Depositing $MANCER... Please confirm in your wallet");
     const success = await deposit(depositAmount);
     toast.dismiss(toastId);
     if (success) {
@@ -117,7 +117,7 @@ export default function Wallet() {
   const handleWithdraw = async () => {
     if (!isConnected) {
       toast.error("Please connect your wallet first");
-      openConnectModal?.();
+      login();
       return;
     }
 
@@ -131,7 +131,7 @@ export default function Wallet() {
       return;
     }
 
-    const toastId = toast.loading("Withdrawing USDC...");
+    const toastId = toast.loading("Withdrawing $MANCER...");
     const success = await withdraw(withdrawAmount);
     toast.dismiss(toastId);
     if (success) {
@@ -152,6 +152,17 @@ export default function Wallet() {
 
   const needsApproval = parseFloat(allowance) < parseFloat(depositAmount || "0");
 
+  if (!ready) {
+    return (
+      <div className="min-h-screen bg-background bg-grid-pattern font-sans">
+        <Navbar />
+        <main className="container mx-auto px-4 py-8 flex justify-center items-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </main>
+      </div>
+    );
+  }
+
   if (!isConnected) {
     return (
       <div className="min-h-screen bg-background bg-grid-pattern font-sans">
@@ -165,11 +176,11 @@ export default function Wallet() {
               <div className="text-center space-y-2">
                 <h2 className="text-2xl font-bold">Connect Your Wallet</h2>
                 <p className="text-muted-foreground">
-                  Connect your wallet to deposit USDC and start trading
+                  Connect your wallet to deposit $MANCER and start trading
                 </p>
               </div>
               <Button 
-                onClick={() => openConnectModal?.()}
+                onClick={login}
                 size="lg"
                 className="bg-primary hover:bg-primary/90 font-bold shadow-lg"
                 data-testid="button-connect-wallet"
@@ -194,20 +205,20 @@ export default function Wallet() {
             <WalletIcon className="h-8 w-8 text-primary" />
             Wallet
           </h1>
-          <p className="text-muted-foreground">Manage your USDC deposits and withdrawals</p>
+          <p className="text-muted-foreground">Manage your $MANCER deposits and withdrawals</p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
           <Card className="bg-gradient-to-br from-primary/20 via-card/50 to-card/30 backdrop-blur-xl border-primary/20 shadow-2xl">
             <CardHeader className="pb-2">
               <CardDescription className="text-xs uppercase tracking-widest text-muted-foreground">
-                Wallet USDC Balance
+                Wallet $MANCER Balance
               </CardDescription>
               <CardTitle className="flex items-baseline gap-2">
-                <span className="text-4xl font-mono font-bold" data-testid="text-usdc-balance">
-                  {formatBalance(usdcBalance)}
+                <span className="text-4xl font-mono font-bold" data-testid="text-mancer-balance">
+                  {formatBalance(mancerBalance)}
                 </span>
-                <span className="text-xl text-muted-foreground">USDC</span>
+                <span className="text-xl text-muted-foreground">$MANCER</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -226,12 +237,12 @@ export default function Wallet() {
                 <span className="text-4xl font-mono font-bold text-monad-green" data-testid="text-platform-balance">
                   {formatBalance(contractBalance)}
                 </span>
-                <span className="text-xl text-muted-foreground">USDC</span>
+                <span className="text-xl text-muted-foreground">$MANCER</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-xs text-muted-foreground">
-                Available for trading on Monad Markets
+                Available for trading on Nekomancer
               </p>
             </CardContent>
           </Card>
@@ -275,7 +286,7 @@ export default function Wallet() {
                       data-testid="input-deposit-amount"
                     />
                     <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">
-                      USDC
+                      $MANCER
                     </span>
                   </div>
                   <div className="flex gap-2">
@@ -304,7 +315,7 @@ export default function Wallet() {
                   ) : (
                     <>
                       <Zap className="h-5 w-5 mr-2" />
-                      {needsApproval ? "Approve & Deposit" : "Deposit USDC"}
+                      {needsApproval ? "Approve & Deposit" : "Deposit $MANCER"}
                     </>
                   )}
                 </Button>
@@ -313,14 +324,14 @@ export default function Wallet() {
                   Deposits are instant. Your funds will be available for trading immediately.
                 </p>
 
-                {parseFloat(usdcBalance) === 0 && (
+                {parseFloat(mancerBalance) === 0 && (
                   <div className="p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-center space-y-2">
-                    <p className="text-sm text-yellow-500 font-medium">No USDC in your wallet</p>
+                    <p className="text-sm text-yellow-500 font-medium">No $MANCER in your wallet</p>
                     <p className="text-xs text-muted-foreground">
-                      You need USDC on Monad to deposit. Bridge USDC from another chain or get some from an exchange.
+                      You need $MANCER on Monad to deposit. Get $MANCER from nad.fun or trade on a DEX.
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      USDC Contract: <span className="font-mono text-primary">0x754704...a603</span>
+                      $MANCER Contract: <span className="font-mono text-primary">0x4e12a7...7777</span>
                     </p>
                   </div>
                 )}
@@ -354,7 +365,7 @@ export default function Wallet() {
                   <div className="flex justify-between text-xs">
                     <span className="text-muted-foreground">Available:</span>
                     <span className="text-foreground font-medium">
-                      {formatBalance(contractBalance)} USDC
+                      {formatBalance(contractBalance)} $MANCER
                     </span>
                   </div>
                 </div>
@@ -376,7 +387,7 @@ export default function Wallet() {
                 </Button>
 
                 <p className="text-xs text-center text-muted-foreground">
-                  Withdrawals are instant. USDC will be sent directly to your wallet.
+                  Withdrawals are instant. $MANCER will be sent directly to your wallet.
                 </p>
               </div>
             </TabsContent>
