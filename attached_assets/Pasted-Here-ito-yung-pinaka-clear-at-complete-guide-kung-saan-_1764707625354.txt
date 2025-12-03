@@ -1,0 +1,175 @@
+Here — ito yung pinaka-clear at complete guide kung saan ka kukuha ng FREE APIs para sa prediction market mo (weather, sports, crypto, politics, events, etc.).
+
+This is the list that Polymarket-style platforms use.
+
+⸻
+
+✅ 1. CRYPTO APIs (FREE)
+
+For predicting token price, MCAP, or events:
+
+Coingecko API (FREE)
+	•	best free crypto API
+	•	no API key needed
+	•	real-time prices, market cap, volume
+
+GET:
+https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd
+
+⸻
+
+CoinMarketCap (FREE Tier)
+	•	needs key
+	•	limited calls
+
+https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest
+
+⸻
+
+Dexscreener API (FREE)
+	•	best for onchain tokens
+	•	perfect for new coins
+	•	real-time charts
+
+https://api.dexscreener.io/latest/dex/tokens/{contract}
+
+⸻
+
+✅ 2. WEATHER APIs (FREE)
+
+For: “Uulan ba ngayon?”, temperature prediction, etc.
+
+OpenWeatherMap (FREE)
+	•	free tier
+	•	real-time weather
+
+https://api.openweathermap.org/data/2.5/weather?q=Manila&appid=API_KEY
+
+⸻
+
+WeatherAPI.com (FREE)
+	•	forecasts & history
+	•	easy to use
+
+⸻
+
+✅ 3. SPORTS APIs (FREE TIER)
+
+For NBA, FIFA, MLB, UFC predictions.
+
+API-Football / API-Sports
+	•	globally used
+	•	free tier available
+	•	supports basketball, football, baseball, e-sports
+
+⸻
+
+TheSportsDB (FREE)
+	•	community supported
+	•	match results, schedules, teams
+
+⸻
+
+✅ 4. POLITICS / REAL-WORLD EVENTS (FREE)
+
+For: election results, government decisions, political events.
+
+NewsAPI.org (FREE)
+	•	headlines, events
+	•	good source for “Yes/No” news events
+	•	Example:
+	•	“Will this bill pass?”
+	•	“Will X resign this week?”
+
+⸻
+
+Bing News Search API (Azure)
+	•	heavy-duty
+	•	1,000 free calls/month
+
+⸻
+
+✅ 5. POP-CULTURE / MOVIES / CELEBRITIES
+
+For: box office predictions, celebrity events.
+
+TMDB (The Movie Database)
+	•	free
+	•	box office data, movie releases
+
+⸻
+
+IMDB API (Unofficial free ones)
+	•	several free wrappers available
+	•	good for film events
+
+⸻
+
+✅ 6. TWITTER / SENTIMENT / TRENDS
+
+For sentiment-based prediction markets:
+
+X/Twitter API (Free limited)
+	•	trending topics
+	•	engagement counts
+
+⸻
+
+Google Trends API (pytrends - free)
+	•	great for “Will this become trending?”
+
+⸻
+
+✅ 7. OTHER FREE DATA SOURCES
+
+Github API
+
+Predict dev activity trends (e.g., “Will a repo hit 1k stars?”)
+
+Open Data PH
+
+Local PH data for real-world events
+https://data.gov.ph/
+
+Wikipedia API
+
+Pageview spikes for celebrity/brand predictions
+
+⸻
+
+🧠 IMPORTANT
+
+ERC-8004 Oracle = your server
+Your server uses these APIs → decides result → sends signed result to your contract.
+
+The blockchain DOES NOT call these APIs directly.
+
+⸻
+
+⭐ RECOMMENDED SETUP FOR YOU
+
+Use 1–2 APIs per category:
+
+Crypto:
+	•	Dexscreener (onchain new coins)
+	•	Coingecko (blue-chips)
+
+Weather:
+	•	OpenWeather
+
+Sports:
+	•	API-Football
+	•	TheSportsDB
+
+Politics / Events:
+	•	NewsAPI
+
+⸻
+
+If you want, I can make you a full Oracle backend script (Node.js) that:
+	•	fetches APIs
+	•	decides winner
+	•	signs ERC-8004 result
+	•	sends to contract automatically
+
+Want me to generate that?

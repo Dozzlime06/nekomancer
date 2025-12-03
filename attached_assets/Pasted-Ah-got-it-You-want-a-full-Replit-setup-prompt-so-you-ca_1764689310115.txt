@@ -1,0 +1,145 @@
+Ah, got it! You want a full Replit setup prompt so you can build your Monad ERC‑8004 prediction market with:
+	•	Smart contract logic
+	•	Oracle bot
+	•	Real-time frontend (React / TailwindCSS)
+	•	Backend for API fetching & WebSocket updates
+	•	All features integrated
+
+I can write a single detailed Replit prompt/instruction you can paste, so it sets up all files and structure. Here’s a complete version:
+
+⸻
+
+Replit Full Project Prompt for Monad ERC‑8004 Prediction Market
+
+Project Name: MonadPredictionMarket
+
+Languages/Environments:
+	•	Backend: Node.js (Express.js) or Python (FastAPI)
+	•	Frontend: React + TailwindCSS
+	•	Smart Contract: Solidity (ERC‑8004 + PredictionMarket contract)
+	•	Database: Optional SQLite or Replit KV for storing events temporarily
+
+⸻
+
+Prompt to Paste in Replit
+
+Create a full-stack prediction market project for the Monad blockchain using ERC‑8004 agents. The project should include the following:
+
+1️⃣ **Smart Contract (Solidity)**
+
+- ERC‑8004 Agent NFT contract (mintable, transferable, used as oracle agent)
+- PredictionMarket contract:
+  - Event creation with:
+    - id, question, deadline, options ["YES", "NO"], rewardPool, resolved flag, outcome
+  - Users can place bets (stake MEME tokens) on YES/NO options
+  - Mapping for user bets and stake
+  - Only ERC‑8004 agents can submit event outcomes
+  - Automatic payout distribution after agent report
+  - Platform fee (2-5% of winning bets)
+- Compile using Solidity 0.8.x
+- Include example deployment script to Monad testnet
+
+2️⃣ **Backend Bot (Node.js or Python)**
+
+- Fetches real-world outcomes from APIs:
+  - Crypto prices (CoinGecko)
+  - Sports scores (TheSportsDB or API-Football)
+  - Optional pop-culture outcomes
+- Uses ERC‑8004 agent wallet private key to submit outcome transaction to PredictionMarket contract
+- Runs automatically when event deadline is reached
+- Optional reputation system for agents
+
+3️⃣ **Backend Server (Express.js / FastAPI)**
+
+- REST endpoints:
+  - `/events` → list active and past events
+  - `/bet` → place a bet
+  - `/user/:address` → get user bets and payouts
+- WebSocket / SSE server to push real-time updates:
+  - Bet totals
+  - Oracle outcome status
+  - User-specific payout updates
+
+4️⃣ **Frontend (React + TailwindCSS)**
+
+- Connect wallet (Monad-compatible)
+- Display event cards with:
+  - Question, options YES/NO
+  - Live vote distribution (bar chart / progress bars)
+  - Countdown timer to event close
+  - User bet and amount
+- Result display:
+  - Highlight winning option (green/red)
+  - Show user payout
+  - Optional confetti animation
+- Leaderboards / streaks / NFT badges
+- Real-time updates via WebSocket
+
+5️⃣ **Integration**
+
+- Frontend communicates with backend for placing bets and real-time updates
+- Backend bot submits verified outcomes to smart contract
+- Smart contract distributes payouts automatically
+- Frontend updates instantly when oracle reports outcome
+
+6️⃣ **Optional Enhancements**
+
+- NFT badges for streaks
+- Sliding platform fees for small/medium/high volume events
+- Animated result reveal
+- Mobile responsive design
+
+7️⃣ **File Structure Suggestion**
+
+/contracts
+  - ERC8004.sol
+  - PredictionMarket.sol
+  - deploy.js
+
+/backend-bot
+  - bot.js (fetch API, submit outcome)
+
+/backend-server
+  - server.js (Express.js or FastAPI)
+  - routes.js
+  - websocket.js
+
+/frontend
+  - package.json
+  - src/
+    - App.jsx
+    - components/
+      - EventCard.jsx
+      - ResultCard.jsx
+      - Leaderboard.jsx
+    - styles/
+      - tailwind.css
+
+README.md
+.env.example (store API keys, agent wallet key, RPC URL)
+
+
+⸻
+
+💡 Instructions for Replit after setup:
+	1.	Install necessary packages:
+	•	Node.js: npm install express ethers socket.io chart.js react react-dom tailwindcss
+	•	Python: pip install web3 fastapi uvicorn requests websockets
+	2.	Compile and deploy smart contracts to Monad testnet
+	3.	Run backend bot (node backend-bot/bot.js)
+	4.	Run backend server (node backend-server/server.js)
+	5.	Start frontend (npm start)
+
+⸻
+
+This will give you a complete Replit project scaffold with:
+	•	Smart contracts
+	•	Automated oracle agent
+	•	Real-time backend updates
+	•	Interactive frontend with charts, bets, and results
+
+⸻
+
+If you want, I can also write the first full Replit-ready package.json + React/Tailwind setup + server + bot skeleton so you can literally just paste it and run it immediately.
+
+Do you want me to do that next?

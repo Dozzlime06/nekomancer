@@ -1,0 +1,43 @@
+15:27:08.801 Running build in Washington, D.C., USA (East) – iad1
+15:27:08.802 Build machine configuration: 2 cores, 8 GB
+15:27:08.928 Cloning github.com/Dozzlime06/nekomancer (Branch: main, Commit: c77a82c)
+15:27:08.929 Previous build caches not available.
+15:27:11.436 Cloning completed: 2.508s
+15:27:11.842 Running "vercel build"
+15:27:12.238 Vercel CLI 48.12.0
+15:27:14.383 Installing dependencies...
+15:28:20.318 npm warn ERESOLVE overriding peer dependency
+15:28:24.395 npm warn deprecated @paulmillr/qr@0.2.1: The package is now available as "qr": npm install qr
+15:28:25.668 npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+15:28:25.727 npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+15:28:32.424 npm warn deprecated @walletconnect/sign-client@2.21.1: Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases
+15:28:32.736 npm warn deprecated @walletconnect/universal-provider@2.21.1: Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases
+15:28:33.230 npm warn deprecated @walletconnect/ethereum-provider@2.21.1: Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases
+15:28:33.305 npm warn deprecated @walletconnect/sign-client@2.21.0: Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases
+15:28:33.332 npm warn deprecated @walletconnect/sign-client@2.21.0: Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases
+15:28:33.368 npm warn deprecated @walletconnect/sign-client@2.21.0: Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases
+15:28:33.779 npm warn deprecated @walletconnect/universal-provider@2.21.0: Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases
+15:28:33.843 npm warn deprecated @walletconnect/universal-provider@2.21.0: Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases
+15:28:33.906 npm warn deprecated @walletconnect/universal-provider@2.21.0: Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases
+15:28:53.118 
+15:28:53.119 added 995 packages in 2m
+15:28:53.119 
+15:28:53.119 125 packages are looking for funding
+15:28:53.120   run `npm fund` for details
+15:28:53.284 Running "npm run build"
+15:28:53.400 
+15:28:53.400 > rest-express@1.0.0 build
+15:28:53.400 > tsx script/build.ts
+15:28:53.400 
+15:28:54.310 building client...
+15:28:54.352 [36mvite v7.2.6 [32mbuilding client environment for production...[36m[39m
+15:28:54.573 [32m✓[39m 0 modules transformed.
+15:28:54.670 [31m✗[39m Build failed in 104ms
+15:28:54.670 [31mCould not resolve entry module "index.html".[39m
+15:28:54.670     at getRollupError (file:///vercel/path0/node_modules/rollup/dist/es/shared/parseAst.js:401:41)
+15:28:54.673     at error (file:///vercel/path0/node_modules/rollup/dist/es/shared/parseAst.js:397:42)
+15:28:54.673     at ModuleLoader.loadEntryModule (/vercel/path0/node_modules/rollup/dist/es/shared/node-entry.js:21611:20)
+15:28:54.674     at async Promise.all (index 0) {
+15:28:54.674   code: 'UNRESOLVED_ENTRY'
+15:28:54.674 }
+15:28:54.704 Error: Command "npm run build" exited with 1

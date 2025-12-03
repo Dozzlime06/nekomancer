@@ -1,0 +1,154 @@
+Perfect! Here’s a ready-to-use prompt for Replit that sets up both your live vote chart and landing page for the Monad ERC‑8004 prediction market. You can paste this into a Replit project and it will scaffold the structure.
+
+⸻
+
+Replit Prompt: Landing Page + Live Vote Chart
+
+Project Name: MonadPredictionMarketUI
+
+Stack:
+	•	Frontend: React + TailwindCSS
+	•	Chart: Chart.js
+	•	Backend: Node.js / Express (for API & WebSocket updates)
+	•	Wallet: Monad-compatible wallet connect
+
+⸻
+
+Prompt to Paste
+
+Create a React + TailwindCSS frontend for a Monad ERC‑8004 prediction market. Include:
+
+1️⃣ **Landing Page (Hero + Features)**
+
+- Hero Section:
+  - Headline: "Predict. Win. Earn. Real-time on Monad."
+  - Subtext: "Bet on crypto, sports, and pop-culture events with trustless ERC-8004 oracles."
+  - Animated CTA button: "Connect Wallet"
+  - Optional animated graphic showing live vote bars
+
+- How It Works Section:
+  1. Pick an Event → YES / NO
+  2. Place Your Bet → Stake MEME tokens
+  3. Oracle Confirms → ERC-8004 agent submits outcome
+  4. Claim Winnings → Automatic payout
+
+- Features Section:
+  - Real-Time Updates → vote totals & payouts update instantly
+  - Trustless Oracle → ERC-8004 agent verified
+  - Multiple Event Categories → Crypto, Sports, Pop-Culture
+  - Leaderboards & Rewards → NFT badges, streak rewards
+
+- Event Preview Cards:
+  - Show 2-3 example events with countdown timers and live vote totals
+
+- CTA Section:
+  - Buttons: "Connect Wallet", "View Active Events"
+
+- Footer:
+  - About / Docs / FAQ / Social Links / Disclaimer
+
+---
+
+2️⃣ **Live Vote Chart Component**
+
+- Use Chart.js (Bar chart) to display YES/NO votes
+- Highlight winning option:
+  - Green = winner
+  - Red = loser
+  - Blue = user bet if applicable
+- Updates live via WebSocket / SSE from backend
+- Show numeric vote totals above bars
+- Optional animation when votes update or result is revealed
+
+Example props for React component:
+
+<EventVoteChart
+  yesVotes={70}
+  noVotes={30}
+  outcome={true} // true = YES, false = NO
+  userBet="YES"
+/>
+
+---
+
+3️⃣ **Integration Details**
+
+- Landing page fetches **active events** from backend API
+- Each event card includes **vote totals chart component**
+- When ERC-8004 agent submits outcome:
+  - Update chart colors
+  - Show user payout card
+  - Animate result highlight (confetti or fade)
+- Ensure **mobile responsive design** (stack cards vertically)
+
+---
+
+4️⃣ **File Structure Suggestion**
+
+/frontend
+  - package.json
+  - src/
+    - App.jsx
+    - index.css (TailwindCSS)
+    - components/
+      - LandingPage.jsx
+      - HeroSection.jsx
+      - FeaturesSection.jsx
+      - EventCard.jsx
+      - EventVoteChart.jsx
+      - ResultCard.jsx
+      - Leaderboard.jsx
+    - utils/
+      - api.js (fetch events, user bets)
+      - websocket.js (real-time updates)
+
+.env.example (store backend URL, API keys)
+
+---
+
+5️⃣ **Styling Guidelines**
+
+- Dark theme with gradients or subtle patterns
+- Primary colors:
+  - Green = winning option
+  - Red = losing option
+  - Blue = user bets / action buttons
+- Clean, modern fonts (sans-serif)
+- Subtle hover effects and animations
+- Countdown timers clearly visible on event cards
+- Responsive layout for desktop and mobile
+
+---
+
+6️⃣ **Optional Enhancements**
+
+- Animated vote bars filling in real-time
+- Confetti / highlight when outcome revealed
+- Leaderboard snippet on landing page
+- Event category filters (Crypto / Sports / Pop-Culture)
+- Streak badges or NFT icons for top predictors
+
+
+⸻
+
+💡 How This Works in Replit
+	1.	Create a new Replit React project
+	2.	Paste the prompt in README or Notes for reference
+	3.	Scaffold components (LandingPage.jsx, EventVoteChart.jsx, etc.)
+	4.	Install dependencies:
+
+npm install react react-dom tailwindcss chart.js socket.io-client
+
+	5.	Connect backend via WebSocket to push live vote totals and oracle outcome
+	6.	Start frontend:
+
+npm start
+
+
+⸻
+
+This gives you both a landing page and live vote chart fully integrated and ready to connect with your ERC‑8004 backend logic.
+
+If you want, I can also write the actual React component code for EventVoteChart.jsx + a sample EventCard.jsx with live updates so you can literally copy-paste and run it.
+
+Do you want me to do that next?
