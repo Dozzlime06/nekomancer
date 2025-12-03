@@ -1,8 +1,8 @@
 import { ethers } from "ethers";
 import { ACTIVE_NETWORK } from "./monad";
 
-export const PREDICTION_MARKET_ADDRESS = "0x0118B45105e06e9696bF8959ff3115e3F505D44C";
-export const USDC_ADDRESS = "0x754704Bc059F8C67012fEd69BC8A327a5aafb603";
+export const PREDICTION_MARKET_ADDRESS = "0x256f33EB879264679460Df8Ba0eAb96738bCec9B";
+export const MANCER_ADDRESS = "0x4e12a73042b4964a065a11a3f7845dc0b2717777";
 export const TREASURY_ADDRESS = "0xE9059B5f1C60ecf9C1F07ac2bBa148A75394f56e";
 
 export const PREDICTION_MARKET_ABI = [
@@ -40,7 +40,7 @@ export const PREDICTION_MARKET_ABI = [
   "event PlatformFeeCollected(uint256 indexed marketId, uint256 amount)"
 ];
 
-export const USDC_ABI = [
+export const MANCER_ABI = [
   "function balanceOf(address account) view returns (uint256)",
   "function allowance(address owner, address spender) view returns (uint256)",
   "function approve(address spender, uint256 amount) returns (bool)",
@@ -83,7 +83,7 @@ export const CATEGORY_RESOLUTION_INFO: Record<number, { type: string; descriptio
   },
   [Category.POLITICS]: { 
     type: "OPTIMISTIC ORACLE", 
-    description: "Bond-based resolution. Propose with 5 USDC, challenge with 10 USDC." 
+    description: "Bond-based resolution. Propose with 5 $MANCER, challenge with 10 $MANCER." 
   },
   [Category.POP_CULTURE]: { 
     type: "OPTIMISTIC ORACLE", 
@@ -161,10 +161,13 @@ export function getContract(signerOrProvider?: ethers.Signer | ethers.Provider) 
   return new ethers.Contract(PREDICTION_MARKET_ADDRESS, PREDICTION_MARKET_ABI, provider);
 }
 
-export function getUsdcContract(signerOrProvider?: ethers.Signer | ethers.Provider) {
+export function getMancerContract(signerOrProvider?: ethers.Signer | ethers.Provider) {
   const provider = signerOrProvider || getProvider();
-  return new ethers.Contract(USDC_ADDRESS, USDC_ABI, provider);
+  return new ethers.Contract(MANCER_ADDRESS, MANCER_ABI, provider);
 }
+
+// Legacy alias for compatibility
+export const getUsdcContract = getMancerContract;
 
 export async function getContractBalance(address: string): Promise<string> {
   if (!address) return "0";
@@ -179,31 +182,37 @@ export async function getContractBalance(address: string): Promise<string> {
   }
 }
 
-export async function getUsdcBalance(address: string): Promise<string> {
+export async function getMancerBalance(address: string): Promise<string> {
   if (!address) return "0";
   try {
-    const usdc = getUsdcContract();
-    const balance = await usdc.balanceOf(address);
+    const mancer = getMancerContract();
+    const balance = await mancer.balanceOf(address);
     if (balance === null || balance === undefined) return "0";
-    return ethers.formatUnits(balance, 6);
+    return ethers.formatUnits(balance, 18);
   } catch (error) {
-    console.error("Failed to get USDC balance:", error);
+    console.error("Failed to get $MANCER balance:", error);
     return "0";
   }
 }
 
-export async function getUsdcAllowance(owner: string): Promise<string> {
+// Legacy alias for compatibility
+export const getUsdcBalance = getMancerBalance;
+
+export async function getMancerAllowance(owner: string): Promise<string> {
   if (!owner) return "0";
   try {
-    const usdc = getUsdcContract();
-    const allowance = await usdc.allowance(owner, PREDICTION_MARKET_ADDRESS);
+    const mancer = getMancerContract();
+    const allowance = await mancer.allowance(owner, PREDICTION_MARKET_ADDRESS);
     if (allowance === null || allowance === undefined) return "0";
-    return ethers.formatUnits(allowance, 6);
+    return ethers.formatUnits(allowance, 18);
   } catch (error) {
     console.error("Failed to get allowance:", error);
     return "0";
   }
 }
+
+// Legacy alias for compatibility
+export const getUsdcAllowance = getMancerAllowance;
 
 export async function getNativeBalance(address: string): Promise<string> {
   if (!address) return "0";
@@ -310,12 +319,16 @@ export async function getMarketPrice(marketId: number, isYes: boolean): Promise<
   }
 }
 
-export function formatUsdc(amount: bigint | null | undefined): string {
+export function formatMancer(amount: bigint | null | undefined): string {
   if (amount === null || amount === undefined) return "0";
-  return ethers.formatUnits(amount, 6);
+  return ethers.formatUnits(amount, 18);
 }
 
-export function parseUsdc(amount: string): bigint {
+export function parseMancer(amount: string): bigint {
   if (!amount || amount === "") return BigInt(0);
-  return ethers.parseUnits(amount, 6);
+  return ethers.parseUnits(amount, 18);
 }
+
+// Legacy aliases for compatibility
+export const formatUsdc = formatMancer;
+export const parseUsdc = parseMancer;
