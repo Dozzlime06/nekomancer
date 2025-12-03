@@ -10,9 +10,9 @@ import { formatDistanceToNow } from "date-fns";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useState, useEffect } from "react";
 import { useContract } from "@/hooks/useContract";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { usePrivy } from "@privy-io/react-auth";
 import { toast } from "sonner";
-import { getMarket, getPosition, Market, MarketStatus, formatUsdc, Position, categoryToString, Category } from "@/lib/contract";
+import { getMarket, getPosition, Market, MarketStatus, formatMancer, Position, categoryToString, Category } from "@/lib/contract";
 
 function generatePriceHistory(currentYesPrice: number) {
   const history = [];
@@ -46,7 +46,7 @@ export default function EventDetails() {
   const [contractBalance, setContractBalance] = useState("0");
 
   const { isConnected, address, buyShares, sellShares, proposeOutcome, finalizeResolution, claimWinnings, loading, error, getContractBalance } = useContract();
-  const { openConnectModal } = useConnectModal();
+  const { login } = usePrivy();
 
   const loadMarket = async () => {
     try {
@@ -75,14 +75,14 @@ export default function EventDetails() {
 
   const handleBuy = async () => {
     if (!isConnected) {
-      openConnectModal?.();
+      login();
       return;
     }
     
     const balanceNum = parseFloat(contractBalance);
     const amountNum = parseFloat(amount);
     if (amountNum > balanceNum) {
-      toast.error("Insufficient balance. Please deposit USDC first.");
+      toast.error("Insufficient balance. Please deposit $MANCER first.");
       return;
     }
     
@@ -99,7 +99,7 @@ export default function EventDetails() {
 
   const handleSell = async () => {
     if (!isConnected) {
-      openConnectModal?.();
+      login();
       return;
     }
     
@@ -133,7 +133,7 @@ export default function EventDetails() {
   const handleProposeOutcome = async () => {
     if (!market) return;
     const toastId = toast.loading("Proposing outcome...");
-    const success = await proposeOutcome(marketId, "0");
+    const success = await proposeOutcome(marketId, true);
     toast.dismiss(toastId);
     if (success) {
       toast.success("Outcome proposed! Bond posted.");
@@ -199,7 +199,7 @@ export default function EventDetails() {
   const potentialPayout = shares;
   const profit = potentialPayout - parseFloat(amount);
   const returnPercentage = parseFloat(amount) > 0 ? ((profit / parseFloat(amount)) * 100).toFixed(0) : "0";
-  const volume = formatUsdc(market.totalVolume);
+  const volume = formatMancer(market.totalVolume);
   const deadline = new Date(Number(market.deadline) * 1000);
   const isExpired = deadline < new Date();
   const isOpen = Number(market.status) === MarketStatus.OPEN;
@@ -353,7 +353,7 @@ export default function EventDetails() {
                       <span className="font-bold text-monad-green">{market.outcome === 1 ? "YES" : "NO"}</span>
                     </div>
                     {market.targetAsset && (
-                      <p className="text-xs">Target: {market.targetAsset.toUpperCase()} {market.priceAbove ? "above" : "below"} ${formatUsdc(market.targetPrice)}</p>
+                      <p className="text-xs">Target: {market.targetAsset.toUpperCase()} {market.priceAbove ? "above" : "below"} ${formatMancer(market.targetPrice)}</p>
                     )}
                   </div>
                 ) : isPending ? (
@@ -378,7 +378,7 @@ export default function EventDetails() {
                     {market.targetAsset ? (
                       <>
                         <p className="text-xs">
-                          Target: <span className="text-primary font-medium">{market.targetAsset.toUpperCase()}</span> {market.priceAbove ? "above" : "below"} <span className="text-primary font-medium">${formatUsdc(market.targetPrice)}</span>
+                          Target: <span className="text-primary font-medium">{market.targetAsset.toUpperCase()}</span> {market.priceAbove ? "above" : "below"} <span className="text-primary font-medium">${formatMancer(market.targetPrice)}</span>
                         </p>
                         <p className="text-xs mt-2">
                           After deadline, anyone can propose the outcome. Crypto markets can be verified against live prices.
@@ -408,13 +408,13 @@ export default function EventDetails() {
                     {position!.yesShares > BigInt(0) && (
                       <div className="p-3 rounded-lg bg-monad-green/10 border border-monad-green/30">
                         <div className="text-xs text-muted-foreground">YES Shares</div>
-                        <div className="text-lg font-bold text-monad-green">{formatUsdc(position!.yesShares)}</div>
+                        <div className="text-lg font-bold text-monad-green">{formatMancer(position!.yesShares)}</div>
                       </div>
                     )}
                     {position!.noShares > BigInt(0) && (
                       <div className="p-3 rounded-lg bg-monad-pink/10 border border-monad-pink/30">
                         <div className="text-xs text-muted-foreground">NO Shares</div>
-                        <div className="text-lg font-bold text-monad-pink">{formatUsdc(position!.noShares)}</div>
+                        <div className="text-lg font-bold text-monad-pink">{formatMancer(position!.noShares)}</div>
                       </div>
                     )}
                   </div>
@@ -503,9 +503,9 @@ export default function EventDetails() {
 
                     <div className="space-y-2">
                       <div className="flex justify-between text-xs">
-                        <span className="text-muted-foreground">Amount (USDC)</span>
+                        <span className="text-muted-foreground">Amount ($MANCER)</span>
                         <span className="text-primary font-medium" data-testid="text-balance">
-                          Balance: {parseFloat(contractBalance).toFixed(2)} USDC
+                          Balance: {parseFloat(contractBalance).toFixed(2)} $MANCER
                         </span>
                       </div>
                       <div className="relative">
@@ -586,7 +586,7 @@ export default function EventDetails() {
 
                     {!isConnected && (
                       <p className="text-xs text-center text-muted-foreground">
-                        Connect wallet and deposit USDC to trade
+                        Connect wallet and deposit $MANCER to trade
                       </p>
                     )}
                   </TabsContent>
