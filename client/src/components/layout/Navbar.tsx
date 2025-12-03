@@ -1,9 +1,9 @@
 import { Link, useLocation } from "wouter";
-import { Bell, Search, Menu, Home as HomeIcon, Trophy, Briefcase, ChevronRight, TrendingUp, Moon, Sun, Plus, Wallet } from "lucide-react";
+import { Bell, Search, Menu, Home as HomeIcon, Trophy, Briefcase, ChevronRight, TrendingUp, Plus, Wallet, LogOut, Copy, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 import logoImage from "@assets/IMG_9377_1764744730481.jpeg";
 import {
   Sheet,
@@ -13,11 +13,24 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [location] = useLocation();
-  const [isDark, setIsDark] = useState(true);
+  const { ready, authenticated, login, logout, user } = usePrivy();
+  const { wallets } = useWallets();
+
+  const activeWallet = wallets[0];
+  const address = activeWallet?.address || user?.wallet?.address;
+  const isConnected = ready && authenticated && !!address;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,6 +50,23 @@ export function Navbar() {
     { href: "/portfolio", label: "Portfolio", icon: Briefcase },
     { href: "/wallet", label: "Wallet", icon: Wallet },
   ];
+
+  const shortenAddress = (addr: string) => {
+    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+  };
+
+  const copyAddress = () => {
+    if (address) {
+      navigator.clipboard.writeText(address);
+      toast.success("Address copied!");
+    }
+  };
+
+  const openExplorer = () => {
+    if (address) {
+      window.open(`https://monadvision.com/address/${address}`, "_blank");
+    }
+  };
 
   return (
     <nav className={`sticky top-0 z-50 w-full transition-all duration-300 ${scrolled ? "border-b border-white/10 bg-background/90 backdrop-blur-xl shadow-lg" : "bg-background/50 backdrop-blur-sm border-b border-white/5"}`}>
@@ -91,72 +121,52 @@ export function Navbar() {
             <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-primary animate-pulse"></span>
           </Button>
 
-          <ConnectButton.Custom>
-            {({
-              account,
-              chain,
-              openAccountModal,
-              openChainModal,
-              openConnectModal,
-              mounted,
-            }) => {
-              const ready = mounted;
-              const connected = ready && account && chain;
-
-              return (
-                <div
-                  {...(!ready && {
-                    'aria-hidden': true,
-                    'style': {
-                      opacity: 0,
-                      pointerEvents: 'none',
-                      userSelect: 'none',
-                    },
-                  })}
+          {!ready ? (
+            <Button
+              disabled
+              className="font-mono font-bold h-9 rounded-full bg-primary/50"
+              data-testid="button-wallet"
+            >
+              Loading...
+            </Button>
+          ) : !isConnected ? (
+            <Button
+              onClick={login}
+              className="font-mono font-bold h-9 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_15px_rgba(131,110,249,0.4)] hover:shadow-[0_0_25px_rgba(131,110,249,0.6)] hover:scale-105 transition-all duration-300"
+              data-testid="button-wallet"
+            >
+              <span className="hidden sm:inline">Connect Wallet</span>
+              <span className="sm:hidden">Connect</span>
+            </Button>
+          ) : (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="font-mono font-bold h-9 rounded-full border-primary/30 text-primary hover:bg-primary/10 transition-all duration-300"
+                  data-testid="button-wallet"
                 >
-                  {(() => {
-                    if (!connected) {
-                      return (
-                        <Button
-                          onClick={openConnectModal}
-                          className="font-mono font-bold h-9 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_15px_rgba(131,110,249,0.4)] hover:shadow-[0_0_25px_rgba(131,110,249,0.6)] hover:scale-105 transition-all duration-300"
-                          data-testid="button-wallet"
-                        >
-                          <span className="hidden sm:inline">Connect Wallet</span>
-                          <span className="sm:hidden">Connect</span>
-                        </Button>
-                      );
-                    }
-
-                    if (chain.unsupported) {
-                      return (
-                        <Button
-                          onClick={openChainModal}
-                          variant="destructive"
-                          className="font-mono font-bold h-9 rounded-full"
-                          data-testid="button-wrong-network"
-                        >
-                          Wrong Network
-                        </Button>
-                      );
-                    }
-
-                    return (
-                      <Button
-                        onClick={openAccountModal}
-                        variant="outline"
-                        className="font-mono font-bold h-9 rounded-full border-primary/30 text-primary hover:bg-primary/10 transition-all duration-300"
-                        data-testid="button-wallet"
-                      >
-                        <span className="hidden sm:inline">{account.displayName}</span>
-                        <span className="sm:hidden">{account.displayName?.slice(0, 8)}</span>
-                      </Button>
-                    );
-                  })()}
-                </div>
-              );
-            }}
-          </ConnectButton.Custom>
+                  <span className="hidden sm:inline">{shortenAddress(address!)}</span>
+                  <span className="sm:hidden">{address?.slice(0, 6)}...</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 bg-background/95 backdrop-blur-xl border-white/10">
+                <DropdownMenuItem onClick={copyAddress} className="cursor-pointer">
+                  <Copy className="mr-2 h-4 w-4" />
+                  Copy Address
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={openExplorer} className="cursor-pointer">
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  View on Explorer
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-white/10" />
+                <DropdownMenuItem onClick={logout} className="cursor-pointer text-red-400 focus:text-red-400">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Disconnect
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
           
           <Sheet>
             <SheetTrigger asChild>
@@ -218,7 +228,7 @@ export function Navbar() {
                 <div className="px-4">
                     <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4">Community</h4>
                     <div className="flex gap-3">
-                        <a href="https://docs.monadmarkets.xyz" target="_blank" rel="noopener noreferrer">
+                        <a href="https://nekomancer-dex.gitbook.io/docs/" target="_blank" rel="noopener noreferrer">
                             <Button variant="outline" size="icon" className="h-12 w-12 rounded-full border-white/10 bg-white/5 hover:bg-white/10">
                                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M19 2H6c-1.206 0-3 .799-3 3v14c0 2.201 1.794 3 3 3h15v-2H6.012C5.55 19.988 5 19.806 5 19c0-.101.009-.191.024-.273.112-.576.584-.717.988-.727H21V4a2 2 0 0 0-2-2zm0 9-2-1-2 1V4h4v7z"/></svg>
                             </Button>
