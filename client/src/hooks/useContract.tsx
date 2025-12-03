@@ -1,16 +1,16 @@
 import { useState, useCallback } from "react";
 import { ethers } from "ethers";
-import { useAccount } from "wagmi";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 import {
   PREDICTION_MARKET_ADDRESS,
   PREDICTION_MARKET_ABI,
-  USDC_ADDRESS,
-  USDC_ABI,
+  MANCER_ADDRESS,
+  MANCER_ABI,
   getContractBalance,
-  getUsdcBalance,
-  getUsdcAllowance,
+  getMancerBalance,
+  getMancerAllowance,
   getNativeBalance,
-  parseUsdc,
+  parseMancer,
   Market,
   getAllMarkets,
   getMarket,
@@ -21,74 +21,76 @@ import {
 const MONAD_CHAIN_ID = 143;
 
 export function useContract() {
-  const { address, isConnected } = useAccount();
+  const { ready, authenticated } = usePrivy();
+  const { wallets } = useWallets();
+  
+  const activeWallet = wallets[0];
+  const address = activeWallet?.address;
+  const isConnected = ready && authenticated && !!address;
+  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const getSigner = useCallback(async () => {
-    if (!window.ethereum) throw new Error("No wallet found. Please install MetaMask.");
-    if (!isConnected) throw new Error("Wallet not connected");
-    
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    
-    const network = await provider.getNetwork();
-    if (Number(network.chainId) !== MONAD_CHAIN_ID) {
-      try {
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x8f' }],
-        });
-        await new Promise(resolve => setTimeout(resolve, 500));
-      } catch (switchError: any) {
-        if (switchError.code === 4902) {
-          try {
-            await window.ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params: [{
-                chainId: '0x8f',
-                chainName: 'Monad',
-                nativeCurrency: { name: 'MON', symbol: 'MON', decimals: 18 },
-                rpcUrls: ['https://rpc.monad.xyz'],
-                blockExplorerUrls: ['https://monadvision.com']
-              }],
-            });
-          } catch (addError) {
-            throw new Error("Please add Monad network to your wallet");
-          }
-        } else if (switchError.code === 4001) {
-          throw new Error("Please switch to Monad network");
-        } else {
-          throw new Error("Failed to switch network");
-        }
-      }
+    if (!isConnected || !activeWallet) {
+      throw new Error("Wallet not connected");
     }
     
     try {
-      return await provider.getSigner();
+      const provider = await activeWallet.getEthersProvider();
+      
+      const network = await provider.getNetwork();
+      if (Number(network.chainId) !== MONAD_CHAIN_ID) {
+        try {
+          await activeWallet.switchChain(MONAD_CHAIN_ID);
+          await new Promise(resolve => setTimeout(resolve, 500));
+        } catch (switchError: any) {
+          if (window.ethereum) {
+            try {
+              await window.ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [{
+                  chainId: '0x8f',
+                  chainName: 'Monad',
+                  nativeCurrency: { name: 'MON', symbol: 'MON', decimals: 18 },
+                  rpcUrls: ['https://rpc.monad.xyz'],
+                  blockExplorerUrls: ['https://monadvision.com']
+                }],
+              });
+            } catch (addError) {
+              throw new Error("Please add Monad network to your wallet");
+            }
+          } else {
+            throw new Error("Please switch to Monad network (Chain ID 143)");
+          }
+        }
+      }
+      
+      return provider.getSigner();
     } catch (e: any) {
       if (e.code === 4001) {
         throw new Error("Connection rejected by user");
       }
-      throw new Error("Failed to connect to wallet");
+      throw new Error(e.message || "Failed to connect to wallet");
     }
-  }, [isConnected]);
+  }, [isConnected, activeWallet]);
 
   const getContractWithSigner = useCallback(async () => {
     const signer = await getSigner();
     return new ethers.Contract(PREDICTION_MARKET_ADDRESS, PREDICTION_MARKET_ABI, signer);
   }, [getSigner]);
 
-  const getUsdcWithSigner = useCallback(async () => {
+  const getMancerWithSigner = useCallback(async () => {
     const signer = await getSigner();
-    return new ethers.Contract(USDC_ADDRESS, USDC_ABI, signer);
+    return new ethers.Contract(MANCER_ADDRESS, MANCER_ABI, signer);
   }, [getSigner]);
 
-  const approveUsdc = useCallback(async (amount: string) => {
+  const approveMancer = useCallback(async (amount: string) => {
     setLoading(true);
     setError(null);
     try {
-      const usdc = await getUsdcWithSigner();
-      const tx = await usdc.approve(PREDICTION_MARKET_ADDRESS, parseUsdc(amount));
+      const mancer = await getMancerWithSigner();
+      const tx = await mancer.approve(PREDICTION_MARKET_ADDRESS, parseMancer(amount));
       await tx.wait();
       return true;
     } catch (e: any) {
@@ -111,14 +113,14 @@ export function useContract() {
     } finally {
       setLoading(false);
     }
-  }, [getUsdcWithSigner]);
+  }, [getMancerWithSigner]);
 
   const deposit = useCallback(async (amount: string) => {
     setLoading(true);
     setError(null);
     try {
       const contract = await getContractWithSigner();
-      const tx = await contract.deposit(parseUsdc(amount));
+      const tx = await contract.deposit(parseMancer(amount));
       await tx.wait();
       return true;
     } catch (e: any) {
@@ -131,7 +133,7 @@ export function useContract() {
       } else if (msg.includes("insufficient funds for gas") || shortMsg.includes("insufficient funds")) {
         setError("Need MON for gas fees. Add MON to your wallet.");
       } else if (msg.includes("allowance") || msg.includes("approve") || msg.includes("erc20")) {
-        setError("Please approve USDC first");
+        setError("Please approve $MANCER first");
       } else if (msg.includes("user rejected") || msg.includes("user denied")) {
         setError("Transaction rejected by user");
       } else {
@@ -148,7 +150,7 @@ export function useContract() {
     setError(null);
     try {
       const contract = await getContractWithSigner();
-      const tx = await contract.withdraw(parseUsdc(amount));
+      const tx = await contract.withdraw(parseMancer(amount));
       await tx.wait();
       return true;
     } catch (e: any) {
@@ -172,7 +174,6 @@ export function useContract() {
     try {
       const contract = await getContractWithSigner();
       const priceInUnits = targetPrice && targetPrice !== "0" ? ethers.parseUnits(targetPrice, 6) : BigInt(0);
-      // Category is always 0 (CRYPTO) for now - contract only supports CRYPTO
       const categoryNum = 0;
       const tx = await contract.createMarket(question, categoryNum, deadline, targetAsset || "", priceInUnits, priceAbove);
       const receipt = await tx.wait();
@@ -204,7 +205,7 @@ export function useContract() {
     setError(null);
     try {
       const contract = await getContractWithSigner();
-      const tx = await contract.buyShares(marketId, isYes, parseUsdc(amount));
+      const tx = await contract.buyShares(marketId, isYes, parseMancer(amount));
       await tx.wait();
       return true;
     } catch (e: any) {
@@ -220,7 +221,7 @@ export function useContract() {
     setError(null);
     try {
       const contract = await getContractWithSigner();
-      const tx = await contract.sellShares(marketId, isYes, parseUsdc(shares));
+      const tx = await contract.sellShares(marketId, isYes, parseMancer(shares));
       await tx.wait();
       return true;
     } catch (e: any) {
@@ -318,7 +319,8 @@ export function useContract() {
     isConnected,
     loading,
     error,
-    approveUsdc,
+    approveMancer,
+    approveUsdc: approveMancer,
     deposit,
     withdraw,
     createMarket,
@@ -330,8 +332,10 @@ export function useContract() {
     finalizeResolution,
     claimWinnings,
     getContractBalance: () => address ? getContractBalance(address) : Promise.resolve("0"),
-    getUsdcBalance: () => address ? getUsdcBalance(address) : Promise.resolve("0"),
-    getUsdcAllowance: () => address ? getUsdcAllowance(address) : Promise.resolve("0"),
+    getMancerBalance: () => address ? getMancerBalance(address) : Promise.resolve("0"),
+    getUsdcBalance: () => address ? getMancerBalance(address) : Promise.resolve("0"),
+    getMancerAllowance: () => address ? getMancerAllowance(address) : Promise.resolve("0"),
+    getUsdcAllowance: () => address ? getMancerAllowance(address) : Promise.resolve("0"),
     getNativeBalance: () => address ? getNativeBalance(address) : Promise.resolve("0"),
     getAllMarkets,
     getMarket,
