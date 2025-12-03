@@ -64,7 +64,7 @@ export default function Home() {
                     </Button>
                 </Link>
                 <div className="flex gap-3 justify-center w-full sm:w-auto">
-                    <a href="https://docs.monadmarkets.xyz" target="_blank" rel="noopener noreferrer">
+                    <a href="https://nekomancer-dex.gitbook.io/docs/" target="_blank" rel="noopener noreferrer">
                         <Button size="lg" variant="outline" className="h-14 w-14 rounded-full border-white/10 bg-white/5 hover:bg-white/10 backdrop-blur-sm p-0 flex items-center justify-center" data-testid="button-docs">
                             <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor"><path d="M19 2H6c-1.206 0-3 .799-3 3v14c0 2.201 1.794 3 3 3h15v-2H6.012C5.55 19.988 5 19.806 5 19c0-.101.009-.191.024-.273.112-.576.584-.717.988-.727H21V4a2 2 0 0 0-2-2zm0 9-2-1-2 1V4h4v7z"/></svg>
                         </Button>
@@ -139,8 +139,9 @@ export default function Home() {
                     </span>
                 </div>
                 <div className="flex gap-8 text-sm text-muted-foreground">
-                    <a href="#" className="hover:text-white transition-colors">Privacy</a>
-                    <a href="#" className="hover:text-white transition-colors">Terms</a>
+                    <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+                    <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
+                    <a href="https://nekomancer-dex.gitbook.io/docs/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Docs</a>
                     <a href="https://x.com/nekomancerhq" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Twitter</a>
                     <a href="https://t.me/nekomancerHQ" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Telegram</a>
                 </div>
